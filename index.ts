@@ -8,7 +8,6 @@ import data from "./data/data.json";
 dotenv.config();
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -17,7 +16,7 @@ const openai = new OpenAI({
 });
 
 // POST /chat
-app.post("/chat", async (req: Request, res: Response) => {
+app.post("/", async (req: Request, res: Response) => {
   try {
     const { prompt } = req.body as { prompt?: string };
     if (!prompt) {

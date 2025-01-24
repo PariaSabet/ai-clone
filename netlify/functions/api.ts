@@ -15,7 +15,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-app.post("/chat", async (req, res) => {
+console.log(process.env.OPENAI_API_KEY);
+
+app.post("/", async (req, res) => {
   try {
     const { prompt } = req.body;
     if (!prompt) {
@@ -41,7 +43,7 @@ app.post("/chat", async (req, res) => {
     const resultText = completion.choices[0]?.message?.content || "";
     return res.status(200).json({ response: resultText.trim() });
   } catch (error) {
-    console.error("Error in /chat function:", error);
+    console.error("Error in api function:", error);
     return res.status(500).json({
       error: (error as Error).message || "Internal server error",
     });
