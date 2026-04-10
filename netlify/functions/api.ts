@@ -17,6 +17,10 @@ const openai = new OpenAI({
 
 console.log(process.env.OPENAI_API_KEY);
 
+app.get("/", (_req, res) => {
+  res.status(200).json({ status: "running", usage: "POST / with { \"prompt\": \"your message\" }" });
+});
+
 app.post("/", async (req, res) => {
   try {
     const { prompt } = req.body;

@@ -15,7 +15,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// POST /chat
+app.get("/", (_req: Request, res: Response) => {
+  res.status(200).json({ status: "running", usage: "POST / with { \"prompt\": \"your message\" }" });
+});
+
 app.post("/", async (req: Request, res: Response) => {
   try {
     const { prompt } = req.body as { prompt?: string };
