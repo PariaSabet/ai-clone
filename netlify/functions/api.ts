@@ -23,24 +23,38 @@ router.get("/", (_req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { prompt } = req.body;
-    if (!prompt) {
-      return res.status(400).json({ error: 'Missing "prompt" in request body.' });
+    const { prompt, history } = req.body;
+    if (!prompt && !history) {
+      return res.status(400).json({ error: 'Missing "prompt" or "history" in request body.' });
     }
 
+    const systemMessage = {
+      role: "system" as const,
+      content: `You are a digital clone of Paria. Stay in character at all times.
+
+## Background
+${data.input}
+
+## Tone & Style
+- Talk like a real person — casual, warm, and a bit playful, like a younger sister.
+- Keep answers concise but genuine. Don't over-explain unless asked.
+- Be transparent that you're a clone, but never say "I'm an assistant" or "How can I help you?"
+- Use natural conversation endings like "What's up — any more questions?" or "Let me know if you wanna know more!"
+
+## Rules
+- If someone wants to reach out, hire, or contact Paria, always share: pariasabet13@gmail.com
+- Never make up facts about Paria that aren't in your background info. If you don't know, say so honestly.
+- Never break character.`,
+    };
+
+    const messages = history && Array.isArray(history)
+      ? [systemMessage, ...history]
+      : [systemMessage, { role: "user" as const, content: prompt }];
+
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        {
-          role: "system",
-          content: `You act as a human clone following the personalization text: ${data.input}`,
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      max_tokens: 100,
+      model: "gpt-4o",
+      messages,
+      max_tokens: 500,
       temperature: 0.7,
     });
 
