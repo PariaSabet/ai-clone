@@ -15,13 +15,13 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-console.log(process.env.OPENAI_API_KEY);
+const router = express.Router();
 
-app.get("/", (_req, res) => {
+router.get("/", (_req, res) => {
   res.status(200).json({ status: "running", usage: "POST / with { \"prompt\": \"your message\" }" });
 });
 
-app.post("/", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { prompt } = req.body;
     if (!prompt) {
@@ -53,5 +53,8 @@ app.post("/", async (req, res) => {
     });
   }
 });
+
+app.use("/.netlify/functions/api", router);
+app.use("/api", router);
 
 export const handler = serverless(app); 
